@@ -3,224 +3,167 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Planner – piso $400, renta $1600, Apple total, Freedom libre, Seguro 12, Capital One seleccionable/forzado, Otros + Sugerencias</title>
+<title>Planner – Piso $400, Renta $1600, Apple total, Freedom libre, Seguro 12, Capital One seleccionable/forzado</title>
 <style>
-  :root{--bg:#f7f8fc;--ink:#222;--card:#fff;--brand:#1f4fde;--line:#eef0f6;--muted:#555}
+  :root{
+    --bg:#0f172a;--card:#111827;--ink:#e5e7eb;--muted:#94a3b8;--brand:#22c55e;--danger:#ef4444;--warn:#f59e0b;--line:#1f2937
+  }
   *{box-sizing:border-box}
-  body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}
-  header{background:var(--brand);color:#fff;padding:14px 16px}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
+  header{padding:14px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(15,23,42,.7);backdrop-filter:blur(8px)}
   header h1{margin:0;font-size:18px}
-  main{max-width:1024px;margin:0 auto;padding:14px}
-  .grid{display:grid;gap:10px}
-  @media(min-width:900px){.grid{grid-template-columns:1fr 1fr}}
-  .card{background:var(--card);border-radius:10px;padding:12px;box-shadow:0 4px 14px rgba(0,0,0,.06);margin-bottom:12px}
-  label{display:block;font-size:12px;margin-bottom:6px;color:#444}
-  input,button,select{padding:9px;border:1px solid #d7dbe7;border-radius:8px;font-size:14px}
-  input[type="month"], input[type="date"]{min-width:180px}
-  button{cursor:pointer;font-weight:700}
-  button.primary{background:var(--brand);color:#fff;border:none}
-  table{width:100%;border-collapse:collapse}
-  th,td{padding:8px;border-bottom:1px solid var(--line);font-size:13px;text-align:left;vertical-align:top}
-  th{background:#f2f5ff}
-  tr.mand{background:#fff7f0}
-  tr.violation{background:#ffe9e9}
-  .muted{color:var(--muted)}
-  .kpis{display:flex;gap:10px;flex-wrap:wrap}
-  .kpi{background:var(--card);border-radius:10px;padding:10px 12px;box-shadow:0 4px 14px rgba(0,0,0,.06);min-width:160px}
-  .kpi small{display:block;color:var(--muted)}
-  .kpi b{font-size:18px}
-  .row{display:flex;gap:10px;flex-wrap:wrap}
+  main{max-width:1160px;margin:0 auto;padding:16px}
+  .grid{display:grid;gap:12px}
+  @media(min-width:980px){.grid{grid-template-columns:1.1fr .9fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+  h2{font-size:16px;margin:0 0 10px}
+  label{font-size:13px;color:var(--muted)}
+  input,select,button,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#0b1220;color:var(--ink)}
+  .row{display:grid;gap:8px}
+  @media(min-width:680px){.row-2{grid-template-columns:1fr 1fr}.row-3{grid-template-columns:1fr 1fr 1fr}.row-4{grid-template-columns:1fr 1fr 1fr 1fr}}
+  .pill{display:inline-block;padding:6px 10px;border-radius:100px;background:#0b1220;border:1px solid var(--line);font-size:12px;color:var(--muted)}
+  .kpis{display:grid;gap:10px;grid-template-columns:repeat(2,1fr)}
+  @media(min-width:680px){.kpis{grid-template-columns:repeat(5,1fr)}}
+  .kpi{padding:12px;border:1px dashed #243045;border-radius:12px}
+  .kpi .big{font-size:22px;font-weight:700}
+  .ok{color:var(--brand)} .bad{color:var(--danger)} .warn{color:var(--warn)}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{border-bottom:1px solid var(--line);padding:8px;vertical-align:top}
+  th{color:var(--muted);font-weight:600;text-align:left}
+  tr:last-child td{border-bottom:none}
+  .mini{font-size:12px;color:var(--muted)}
+  .actions{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{cursor:pointer}
+  .btn.primary{background:var(--brand);border:none;color:#052e16;font-weight:700}
+  .btn.ghost{background:#0b1220;border:1px solid var(--line)}
+  .btn.warn{background:var(--warn);border:none;color:#1f2a06}
+  .tag{padding:2px 8px;border-radius:999px;border:1px solid var(--line);font-size:11px;color:var(--muted)}
+  canvas{width:100%;height:220px;border:1px solid var(--line);border-radius:12px;background:#0b1220}
   .error{display:none;background:#ffe7e7;border:1px solid #ffbdbd;color:#8a1f1f;padding:10px;border-radius:8px;white-space:pre-wrap}
-  .right{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
-  .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
-  .pill{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700}
-  .ok{background:#e8f7ee;color:#0f7a3e}
-  .warn{background:#fff7e6;color:#a35b00}
-  .bad{background:#ffe7e7;color:#8a1f1f}
-  .mono{font-family:Menlo,Consolas,monospace}
-  .mini{font-size:12px;color:#666}
-  .tag{display:inline-block;padding:2px 6px;border:1px solid #ddd;border-radius:6px;font-size:11px;margin-left:6px}
 </style>
 </head>
 <body>
 <header><h1>Planner — Pagos restan, viernes suman, piso $400, renta $1600, Apple total</h1></header>
-<main>
+<main class="grid">
   <!-- KPIs -->
-  <div class="kpis">
-    <div class="kpi"><small>Saldo actual</small><b id="kSaldo">$0.00</b></div>
-    <div class="kpi"><small>Piso mínimo</small><b id="kFloor">$400.00</b></div>
-    <div class="kpi"><small>Obligatorio restante</small><b id="kHold">$0.00</b></div>
-    <div class="kpi"><small>Renta (próx. 1)</small><b id="kRent">$1,600.00</b></div>
-    <div class="kpi"><small>Libre seguro</small><b id="kSafe">$0.00</b></div>
-  </div>
+  <section class="card">
+    <div class="kpis">
+      <div class="kpi"><div class="mini">Saldo actual</div><div id="kSaldo" class="big">$0.00</div></div>
+      <div class="kpi"><div class="mini">Piso mínimo</div><div id="kFloor" class="big">$400.00</div></div>
+      <div class="kpi"><div class="mini">Obligatorio restante</div><div id="kHold" class="big warn">$0.00</div></div>
+      <div class="kpi"><div class="mini">Renta (próx. 1)</div><div id="kRent" class="big">$1,600.00</div></div>
+      <div class="kpi"><div class="mini">Libre seguro</div><div id="kSafe" class="big ok">$0.00</div></div>
+    </div>
+    <div style="margin:12px 0">
+      <span class="pill" id="periodLabel"></span>
+      <span class="pill">Autosave local</span>
+      <span class="pill">Viernes suman</span>
+      <span class="pill">Pagos restan</span>
+    </div>
+    <canvas id="chart"></canvas>
+  </section>
 
   <!-- Configuración -->
-  <div class="card">
-    <div class="row">
-      <div>
-        <label>Mes</label>
-        <input id="month" type="month"/>
-      </div>
-      <div>
-        <label>Saldo inicial ($)</label>
-        <input id="saldo" value="2200" inputmode="decimal"/>
-      </div>
-      <div>
-        <label>Piso mínimo ($)</label>
-        <input id="minBal" value="400" inputmode="decimal"/>
-      </div>
-      <div>
-        <label>Renta (día 1 sig. mes) ($)</label>
-        <input id="rent" value="1600" inputmode="decimal"/>
-      </div>
+  <section class="card">
+    <h2>Configuración</h2>
+    <div class="row row-4">
+      <div><label>Mes</label><input id="month" type="month"/></div>
+      <div><label>Saldo inicial ($)</label><input id="saldo" value="2200" inputmode="decimal"/></div>
+      <div><label>Piso mínimo ($)</label><input id="minBal" value="400" inputmode="decimal"/></div>
+      <div><label>Renta (día 1 sig. mes) ($)</label><input id="rent" value="1600" inputmode="decimal"/></div>
     </div>
-  </div>
+    <div class="actions" style="margin-top:10px">
+      <button class="btn primary" id="saveConfig">Guardar config</button>
+      <button class="btn ghost" id="clear">Limpiar todo</button>
+    </div>
+  </section>
 
   <!-- Ingresos -->
-  <div class="card">
-    <h3>Ingresos</h3>
-    <div class="row">
-      <div>
-        <label>Monto por viernes ($)</label>
-        <input id="weekly" value="700" inputmode="decimal"/>
-      </div>
-      <div>
-        <label>Agregar ingresos de los viernes</label>
-        <select id="autoFri">
-          <option value="on" selected>Sí</option>
-          <option value="off">No</option>
-        </select>
-      </div>
-      <div class="row" style="align-items:center">
-        <input type="checkbox" id="omitFirst" checked/>
-        <label for="omitFirst" style="margin:0">Omitir 1er viernes (ya cobrado)</label>
-      </div>
+  <section class="card">
+    <h2>Ingresos</h2>
+    <div class="row row-3">
+      <div><label>Monto por viernes ($)</label><input id="weekly" value="700" inputmode="decimal"/></div>
+      <div><label>Agregar ingresos de los viernes</label><select id="autoFri"><option value="on" selected>Sí</option><option value="off">No</option></select></div>
+      <div style="align-self:end"><input type="checkbox" id="omitFirst" checked/><label for="omitFirst">Omitir 1er viernes (ya cobrado)</label></div>
     </div>
-    <div class="row" style="margin-top:8px">
-      <div>
-        <label>Ingreso manual — Fecha</label>
-        <input id="mInDate" type="date"/>
-      </div>
-      <div>
-        <label>Ingreso manual — Monto ($)</label>
-        <input id="mInAmt" placeholder="900" inputmode="decimal"/>
-      </div>
-      <div class="right">
-        <button id="addIncome">Agregar ingreso manual</button>
-        <button id="clearIncome">Limpiar ingresos</button>
-      </div>
+    <div class="row row-3" style="margin-top:8px">
+      <div><label>Ingreso manual — Fecha</label><input id="mInDate" type="date"/></div>
+      <div><label>Ingreso manual — Monto ($)</label><input id="mInAmt" placeholder="900" inputmode="decimal"/></div>
+      <div style="align-self:end"><button class="btn primary" id="addIncome">Agregar ingreso</button></div>
     </div>
-    <div class="muted">Viernes suman. Pagos restan. “Libre seguro” = Saldo − Piso − Obligatorio restante.</div>
-  </div>
+    <div class="mini">Viernes suman. Pagos restan. “Libre seguro” = Saldo − Piso − Obligatorio restante.</div>
+  </section>
 
-  <!-- Deudas del mes -->
-  <div class="card">
-    <h3>Deudas y pagos del mes</h3>
-    <div class="grid">
-      <div>
-        <label>Apple Card — deuda del mes ($) — total el 27</label>
-        <input id="appleDebt" value="1024" inputmode="decimal"/>
-      </div>
-      <div>
-        <label>Freedom (Chase) — deuda del mes ($)</label>
-        <input id="freedomDebt" value="620" inputmode="decimal"/>
-      </div>
-      <div>
-        <label>Freedom — pago del 11 ($) — tú decides</label>
-        <input id="freedomPay" value="620" inputmode="decimal"/>
-      </div>
-      <div>
-        <label>Capital One — deuda del mes ($)</label>
-        <input id="capDebt" value="717" inputmode="decimal"/>
-      </div>
-      <div>
-        <label>Capital One — pago del 29 ($) — tú decides</label>
-        <input id="capPay" value="717" inputmode="decimal"/>
-      </div>
-      <div>
-        <label>Forzar pago exacto Capital One (sin romper piso)</label>
-        <input type="checkbox" id="capForce"/>
-      </div>
-      <div>
-        <label>Seguro del coche — día 12 ($)</label>
-        <input id="carIns" value="335" inputmode="decimal"/>
-      </div>
+  <!-- Deudas y pagos -->
+  <section class="card">
+    <h2>Deudas y pagos del mes</h2>
+    <div class="row row-4">
+      <div><label>Apple Card — deuda ($)</label><input id="appleDebt" value="1024" inputmode="decimal"/></div>
+      <div><label>Freedom (Chase) — deuda ($)</label><input id="freedomDebt" value="620" inputmode="decimal"/></div>
+      <div><label>Freedom — pago del 11 ($)</label><input id="freedomPay" value="620" inputmode="decimal"/></div>
+      <div><label>Capital One — deuda ($)</label><input id="capDebt" value="717" inputmode="decimal"/></div>
     </div>
-    <div class="muted">Pagos fijos: 6 (Préstamo $104), 11 (Freedom monto elegido), 12 (Teléfono $100) + 12 (Seguro $335), 13 ($500), 27 (Apple total), 29 (Capital One), 1 (Renta mes sig.).</div>
-  </div>
+    <div class="row row-4" style="margin-top:8px">
+      <div><label>Capital One — pago del 29 ($)</label><input id="capPay" value="717" inputmode="decimal"/></div>
+      <div style="align-self:end"><input type="checkbox" id="capForce"/><label for="capForce">Forzar pago exacto</label></div>
+      <div><label>Seguro del coche — día 12 ($)</label><input id="carIns" value="335" inputmode="decimal"/></div>
+      <div style="align-self:end"><button class="btn primary" id="updateDebts">Actualizar deudas</button></div>
+    </div>
+    <div class="mini">Pagos fijos: 6 (Préstamo $104), 11 (Freedom), 12 (Teléfono $100 + Seguro), 13 ($500), 27 (Apple total), 29 (Capital One), 1 (Renta sig.).</div>
+  </section>
 
   <!-- Otros gastos -->
-  <div class="card">
-    <h3>Otros gastos</h3>
-    <div class="row">
-      <div>
-        <label>Fecha</label>
-        <input id="ogDate" type="date"/>
-      </div>
-      <div>
-        <label>Detalle</label>
-        <input id="ogWhat" placeholder="Gasolina / Supermercado / Suscripción…"/>
-      </div>
-      <div>
-        <label>Monto ($)</label>
-        <input id="ogAmt" placeholder="120" inputmode="decimal"/>
-      </div>
-      <div class="row" style="align-items:center">
-        <input type="checkbox" id="ogMandatory"/>
-        <label for="ogMandatory" style="margin:0">Obligatorio</label>
-      </div>
-      <div class="right">
-        <button id="addOther">Agregar gasto</button>
-        <button id="clearOthers">Limpiar lista</button>
-      </div>
+  <section class="card">
+    <h2>Otros gastos</h2>
+    <div class="row row-4">
+      <div><label>Fecha</label><input id="ogDate" type="date"/></div>
+      <div><label>Detalle</label><input id="ogWhat" placeholder="Gasolina / Supermercado…"/></div>
+      <div><label>Monto ($)</label><input id="ogAmt" placeholder="120" inputmode="decimal"/></div>
+      <div style="align-self:end"><input type="checkbox" id="ogMandatory"/><label for="ogMandatory">Obligatorio</label></div>
     </div>
-    <div class="mini">Los <b>obligatorios</b> se reservan y se bloquean si rompen el piso. Los <b>opcionales</b> usan libre-seguro.</div>
+    <div class="actions" style="margin-top:10px">
+      <button class="btn primary" id="addOther">Agregar gasto</button>
+      <button class="btn ghost" id="clearOthers">Limpiar lista</button>
+    </div>
+    <div class="mini">Obligatorios se reservan. Opcionales usan libre-seguro.</div>
     <table id="ogTable" style="margin-top:8px">
       <thead><tr><th>Fecha</th><th>Detalle</th><th>Monto</th><th>Tipo</th><th>Acción</th></tr></thead>
       <tbody></tbody>
     </table>
-  </div>
+  </section>
 
   <!-- Sugerencias -->
-  <div class="card">
-    <h3>Parámetros sugeridos</h3>
-    <div id="sugText" class="mini">Pulsa “Calcular sugerencias”. Considera saldo, ingresos, piso, Apple y renta.</div>
-    <div class="row" style="margin-top:8px">
-      <button id="calcSug">Calcular sugerencias</button>
-      <button id="applySug">Aplicar sugerencias</button>
+  <section class="card">
+    <h2>Parámetros sugeridos</h2>
+    <div id="sugText" class="mini">Pulsa “Calcular sugerencias”.</div>
+    <div class="actions" style="margin-top:8px">
+      <button class="btn warn" id="calcSug">Calcular sugerencias</button>
+      <button class="btn primary" id="applySug">Aplicar sugerencias</button>
     </div>
-  </div>
+  </section>
 
   <!-- Acciones -->
-  <div class="card">
-    <div class="row">
-      <button class="primary" id="gen">Generar plan</button>
-      <button id="exportCsv">Exportar CSV</button>
-      <button id="save">Guardar</button>
-      <button id="load">Cargar</button>
-      <button id="clear">Limpiar tabla</button>
+  <section class="card">
+    <div class="actions">
+      <button class="btn primary" id="gen">Generar plan</button>
+      <button class="btn ghost" id="exportCsv">Exportar CSV</button>
+      <button class="btn ghost" id="exportIcs">Exportar ICS</button>
+      <button class="btn ghost" id="save">Guardar</button>
+      <button class="btn ghost" id="load">Cargar</button>
+      <button class="btn warn" onclick="window.print()">Imprimir / PDF</button>
     </div>
     <div id="err" class="error" style="margin-top:8px"></div>
-  </div>
+  </section>
 
-  <!-- Tabla -->
-  <div class="card">
-    <h3>Línea de tiempo</h3>
-    <table id="table">
-      <thead>
-        <tr>
-          <th>Fecha</th><th>Tipo</th><th>Detalle</th><th>Monto</th><th>Saldo después</th><th>Nota</th>
-        </tr>
-      </thead>
+  <!-- Línea de tiempo -->
+  <section class="card">
+    <h2>Línea de tiempo</h2>
+    <table id="tblPlan">
+      <thead><tr><th>Fecha</th><th>Tipo</th><th>Detalle</th><th>Monto</th><th>Saldo después</th><th>Nota</th></tr></thead>
       <tbody></tbody>
     </table>
-  </div>
-
-  <!-- Resumen -->
-  <div class="card">
-    <h3>Resumen del mes</h3>
-    <div id="summary" class="summary"></div>
-  </div>
+    <div id="planSummary" class="mini" style="margin-top:8px"></div>
+  </section>
 </main>
 
 <script>
@@ -234,138 +177,141 @@
   function fridays(y,m){const d=new Date(y,m-1,1),out=[];while(d.getMonth()===m-1){if(d.getDay()===5)out.push(ymd(y,m,d.getDate()));d.setDate(d.getDate()+1)}return out;}
   function showErr(msg){const e=$("err");e.style.display="block";e.textContent=msg;}
   function clearErr(){const e=$("err");e.style.display="none";e.textContent="";}
-  function setKpis(k){$("kSaldo").textContent=money(k.saldo);$("kFloor").textContent=money(k.floor);$("kRent").textContent=money(k.rent);$("kHold").textContent=money(k.hold);$("kSafe").textContent=money(k.safe);}
-  function addRow(tb,date,type,what,amt,bal,note,cls){
-    const tr=document.createElement("tr");
-    if(cls) tr.classList.add(cls);
-    const signed=(type==="INGRESO")?amt:-amt;
-    tr.innerHTML="<td>"+date+"</td><td>"+type+"</td><td>"+what+"</td>"+
-                 "<td>"+money(signed)+"</td><td>"+money(bal)+"</td><td>"+(note||"")+"</td>";
-    tb.appendChild(tr);
+  function setKpis(k){
+    $("kSaldo").textContent=money(k.saldo);
+    $("kFloor").textContent=money(k.floor);
+    $("kRent").textContent=money(k.rent);
+    $("kHold").textContent=money(k.hold);
+    $("kSafe").textContent=money(k.safe);
   }
   function nextMonth(y,m){return m===12?{y:y+1,m:1}:{y,m:m+1};}
   function pill(ok, text){ return `<span class="pill ${ok===true?'ok':ok===false?'bad':'warn'}">${text}</span>`; }
-  function todayLocalISO(){
-    const d = new Date();
-    const y = d.getFullYear(), m=d.getMonth()+1, dd=d.getDate();
-    return y+"-"+("0"+m).slice(-2)+"-"+("0"+dd).slice(-2);
+  function todayLocalISO(){const d=new Date();const y=d.getFullYear(), m=d.getMonth()+1, dd=d.getDate();return y+"-"+("0"+m).slice(-2)+"-"+("0"+dd).slice(-2);}
+  function currentMonthLocal(){const d=new Date();const y=d.getFullYear(), m=d.getMonth()+1;return y+"-"+("0"+m).slice(-2);}
+  function uid(){ return Math.random().toString(36).slice(2,9); }
+  function nextDueFromRule(rule, y, m){
+    const lastDay = new Date(y, m, 0).getDate();
+    if(/^D(\d{1,2})$/.test(rule)) return ymd(y,m,Math.min(Number(rule.slice(1)), lastDay));
+    if(/^EOM-(\d+)$/.test(rule)) return ymd(y,m,Math.max(1, lastDay - Number(rule.split('-')[1])));
+    return ymd(y,m,15);
   }
-  function currentMonthLocal(){
-    const d = new Date();
-    const y = d.getFullYear(), m=d.getMonth()+1;
-    return y+"-"+("0"+m).slice(-2);
+  function pad(n){return String(n).padStart(2,'0');}
+  function addDaysISO(iso, days){
+    const [Y,M,D]=iso.split('-').map(Number);
+    const d=new Date(Y, M-1, D+days);
+    return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+  }
+  function escapeICS(s){
+    return String(s)
+      .replace(/\\/g,'\\\\')
+      .replace(/,/g,'\\,')
+      .replace(/;/g,'\\;')
+      .replace(/\r?\n/g,'\\n');
   }
 
   // ===== Estado =====
-  let manualIncomes=[];
-  let otherOutlays=[];
-  let lastSuggestions = {freedom: null, cap: null, note: ""};
+  const KEY='planner_combined_v2';
+  const state = load() || {
+    month: currentMonthLocal(),
+    saldo: 2200,
+    minBal: 400,
+    rent: 1600,
+    weekly: 700,
+    autoFri: 'on',
+    omitFirst: true,
+    appleDebt: 1024,
+    freedomDebt: 620,
+    freedomPay: 620,
+    capDebt: 717,
+    capPay: 717,
+    capForce: false,
+    carIns: 335,
+    manualIncomes: [],
+    otherOutlays: [],
+    recurrents: [
+      {id:uid(), name:'Préstamo estudiantil', amt:104, day:6},
+      {id:uid(), name:'Teléfono', amt:100, day:12},
+      {id:uid(), name:'Pago recurrente', amt:500, day:13}
+    ],
+    cards: [
+      {id:uid(), name:'Apple Card', debt:1024, pay:0, rule:'EOM-3'},
+      {id:uid(), name:'Freedom (Chase)', debt:620, pay:620, rule:'D11'},
+      {id:uid(), name:'Capital One', debt:717, pay:717, rule:'D29'}
+    ]
+  };
 
-  // ======= AUTOGUARDADO =======
-  const AUTO_KEY = "planner_autosave_v1";
+  function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+  function load(){ try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ return null; } }
 
-  function collectPayload(){
-    return {
-      month:$("month").value, saldo:$("saldo").value, minBal:$("minBal").value, rent:$("rent").value,
-      weekly:$("weekly").value, autoFri:$("autoFri").value, omitFirst:$("omitFirst").checked,
-      appleDebt:$("appleDebt").value, freedomDebt:$("freedomDebt").value, freedomPay:$("freedomPay").value,
-      capDebt:$("capDebt").value, capPay:$("capPay").value, capForce:$("capForce").checked,
-      carIns:$("carIns").value, manualIncomes, otherOutlays
-    };
-  }
-  function applyPayload(p){
-    if(!p) return;
-    for(const k of ["month","saldo","minBal","rent","weekly","appleDebt","freedomDebt","freedomPay","capDebt","capPay","carIns"]){
-      if(p[k]!==undefined) $(k).value=p[k];
-    }
-    if(p.capForce!==undefined) $("capForce").checked=!!p.capForce;
-    if(p.autoFri!==undefined) $("autoFri").value=p.autoFri;
-    if(p.omitFirst!==undefined) $("omitFirst").checked=!!p.omitFirst;
-    manualIncomes=p.manualIncomes||[];
-    otherOutlays=p.otherOutlays||[];
-    renderOtherOutlays();
-  }
-  function saveState(){ try{ localStorage.setItem(AUTO_KEY, JSON.stringify(collectPayload())); }catch(_){} }
-  function loadState(){ try{ const s=localStorage.getItem(AUTO_KEY); if(s){ applyPayload(JSON.parse(s)); } }catch(_){} }
-
-  function wireAutosave(){
-    const ids = ["month","saldo","minBal","rent","weekly","autoFri","omitFirst","appleDebt","freedomDebt","freedomPay","capDebt","capPay","capForce","carIns","mInDate","mInAmt","ogDate","ogWhat","ogAmt","ogMandatory"];
-    ids.forEach(id=>{
-      const el=$(id); if(!el) return;
-      const ev = (el.tagName==="SELECT"||el.type==="checkbox")?"change":"input";
-      el.addEventListener(ev, saveState);
-    });
-  }
-
-  // ===== Inicialización de inputs con calendario del dispositivo =====
-  (function initDates(){
-    loadState(); // ← carga primero lo que haya
-    const m = $("month");
-    if(!m.value) m.value = currentMonthLocal();   // auto mes actual si no hay guardado
+  // ===== Inicialización =====
+  (function init(){
+    $("month").value = state.month;
     const today = todayLocalISO();
-    if(!$("mInDate").value) $("mInDate").value = today; // ingreso manual hoy
-    if(!$("ogDate").value) $("ogDate").value = today;   // otro gasto hoy
-    wireAutosave(); // engancha autoguardado
-    saveState();    // guarda el estado inicial
+    $("mInDate").value = today;
+    $("ogDate").value = today;
+    $("saldo").value = state.saldo;
+    $("minBal").value = state.minBal;
+    $("rent").value = state.rent;
+    $("weekly").value = state.weekly;
+    $("autoFri").value = state.autoFri;
+    $("omitFirst").checked = state.omitFirst;
+    $("appleDebt").value = state.appleDebt;
+    $("freedomDebt").value = state.freedomDebt;
+    $("freedomPay").value = state.freedomPay;
+    $("capDebt").value = state.capDebt;
+    $("capPay").value = state.capPay;
+    $("capForce").checked = state.capForce;
+    $("carIns").value = state.carIns;
+    renderOtherOutlays();
+    renderKpis();
   })();
 
   // ===== Ingresos manuales =====
   $("addIncome").onclick=function(){
     const d=$("mInDate").value.trim(), a=N($("mInAmt").value);
-    if(!/^\d{4}-\d{2}-\d{2}$/.test(d)) return showErr("Fecha ingreso manual inválida (YYYY-MM-DD)");
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(d)) return showErr("Fecha ingreso manual inválida");
     if(a<=0) return showErr("Monto ingreso manual inválido");
-    manualIncomes.push({date:d,amount:a});
+    state.manualIncomes.push({date:d,amount:a});
     $("mInAmt").value="";
-    saveState(); // autoguarda
-    clearErr();
+    save(); clearErr();
+    renderKpis();
   };
-  $("clearIncome").onclick=function(){ manualIncomes=[]; saveState(); };
 
   // ===== Otros gastos =====
   function renderOtherOutlays(){
     const tb = $("ogTable").querySelector("tbody");
     tb.innerHTML="";
-    otherOutlays.forEach((g,idx)=>{
+    state.otherOutlays.forEach((g,idx)=>{
       const tr=document.createElement("tr");
       tr.innerHTML = `<td>${g.date}</td>
         <td>${g.what||""}</td>
         <td>${money(g.amt)}</td>
         <td>${g.mandatory?'<span class="tag">Obligatorio</span>':'<span class="tag">Opcional</span>'}</td>
-        <td><button data-i="${idx}" class="delOg">Borrar</button></td>`;
+        <td><button class="btn ghost" data-i="${idx}">Borrar</button></td>`;
       tb.appendChild(tr);
     });
-    [...tb.querySelectorAll(".delOg")].forEach(btn=>{
-      btn.onclick=function(){ const i=+this.getAttribute("data-i"); otherOutlays.splice(i,1); renderOtherOutlays(); saveState(); };
+    [...tb.querySelectorAll("button")].forEach(btn=>{
+      btn.onclick=function(){ const i=+this.getAttribute("data-i"); state.otherOutlays.splice(i,1); renderOtherOutlays(); save(); renderKpis(); };
     });
   }
   $("addOther").onclick=function(){
     const d=$("ogDate").value.trim(), w=$("ogWhat").value.trim(), a=N($("ogAmt").value), mand=$("ogMandatory").checked;
-    if(!/^\d{4}-\d{2}-\d{2}$/.test(d)) return showErr("Fecha de gasto inválida (YYYY-MM-DD)");
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(d)) return showErr("Fecha de gasto inválida");
     if(a<=0) return showErr("Monto de gasto inválido");
-    otherOutlays.push({date:d, what:w, amt:a, mandatory:mand});
+    state.otherOutlays.push({date:d, what:w, amt:a, mandatory:mand});
     $("ogWhat").value="";$("ogAmt").value="";$("ogMandatory").checked=false;
-    renderOtherOutlays(); saveState(); clearErr();
+    renderOtherOutlays(); save(); clearErr(); renderKpis();
   };
-  $("clearOthers").onclick=function(){ otherOutlays=[]; renderOtherOutlays(); saveState(); };
+  $("clearOthers").onclick=function(){ state.otherOutlays=[]; renderOtherOutlays(); save(); renderKpis(); };
 
-  // ===== Guardar / Cargar manual (botones existentes) =====
-  $("save").onclick=function(){
-    const payload=collectPayload();
-    localStorage.setItem("planner_full_v6", JSON.stringify(payload));
-    saveState(); // también actualiza el autosave
-  };
-  $("load").onclick=function(){
-    const s=localStorage.getItem("planner_full_v6"); if(!s) return showErr("No hay datos guardados");
-    const p=JSON.parse(s);
-    applyPayload(p);
-    saveState(); // sincroniza con autosave
-    clearErr();
-  };
+  // ===== Guardar / Cargar =====
+  $("save").onclick=function(){ save(); };
+  $("load").onclick=function(){ location.reload(); };
 
   // ===== Exportar CSV =====
   $("exportCsv").onclick=function(){
     const rows=[["Fecha","Tipo","Detalle","Monto","Saldo después","Nota"]];
-    const trs=[...$("table").querySelector("tbody").children];
+    const trs=[...$("tblPlan").querySelector("tbody").children];
     trs.forEach(tr=>{
       const tds=[...tr.children].map(td=>td.textContent.replace(/,/g,""));
       rows.push(tds);
@@ -378,267 +324,350 @@
     URL.revokeObjectURL(url);
   };
 
-  // ===== Motor de simulación (reutilizable para sugerencias) =====
-  function buildEvents(y,m,params){
-    const {weekly, autoFri, omitFirst, manualIncomes, appleDebt, freedomDebt, freedomPay, capDebt, capPay, capForce, carIns, rent, otherOutlays} = params;
-    const ev=[];
-    if(autoFri==="on"){
-      fridays(y,m).forEach((d,idx)=>{ if(omitFirst && idx===0) return; ev.push({date:d,kind:"INGRESO",txt:"Ingreso viernes",amt:weekly}); });
+  // ===== Exportar ICS (solo PAGO, all-day correcto, alarma -1 día) =====
+  $("exportIcs").onclick=function(){
+    const trs=[...$("tblPlan").querySelector("tbody").children];
+    if(trs.length === 0) { showErr("Genera el plan primero"); return; }
+    clearErr();
+
+    function toICSDate(iso){ return iso.replaceAll("-",""); }
+    function utcStamp(){
+      const d=new Date(); const p=n=>String(n).padStart(2,"0");
+      return d.getUTCFullYear()+p(d.getUTCMonth()+1)+p(d.getUTCDate())+"T"+p(d.getUTCHours())+p(d.getUTCMinutes())+p(d.getUTCSeconds())+"Z";
     }
-    manualIncomes.forEach(mi=>{ if(mi.date.slice(0,7)===ymd(y,m,1).slice(0,7)) ev.push({date:mi.date,kind:"INGRESO",txt:"Ingreso manual",amt:mi.amount}); });
-    function pay(day, txt, baseAmt, mandatory){ ev.push({date:ymd(y,m,day),kind:"PAGO",txt:txt,amt:baseAmt,mandatory}); }
-    pay(6,"Préstamo estudiantil",104,true);
-    pay(11,"Freedom (Chase) — tu pago",Math.min(freedomPay, Math.max(0,freedomDebt)), true);
-    pay(12,"Teléfono",100,true);
-    pay(12,"Seguro del coche",carIns,true);
-    pay(13,"Pago recurrente",500,true);
-    pay(27,"Apple Card (pago total)",Math.max(0,appleDebt), true);
-    ev.push({date:ymd(y,m,29), kind:"PAGO", txt:"Capital One — tu pago", desired:Math.max(0,capPay||0), optional:true, force:!!capForce});
+
+    const lines = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "CALSCALE:GREGORIAN",
+      "PRODID:-//PlannerCombined//ES"
+    ];
+    const stamp = utcStamp();
+
+    trs.forEach((tr, idx) => {
+      const tds = [...tr.children];
+      const tipo  = tds[1].textContent.trim();
+      if (tipo !== "PAGO") return; // solo pagos
+
+      const fecha = tds[0].textContent.trim();           // YYYY-MM-DD
+      const det   = tds[2].textContent.trim();
+      const montoTxt = tds[3].textContent.trim();        // puede traer -$123.00 (con span)
+      const nota  = tds[5].textContent.trim();
+
+      const absMonto = Math.abs(parseFloat((montoTxt.match(/-?\d+(\.\d+)?/)||["0"])[0])).toFixed(2);
+      const startISO = fecha;
+      const endISO   = addDaysISO(fecha, 1);             // all-day => DTEND al día siguiente
+      const yyyymmdd = toICSDate(startISO);
+      const yyyymmdd_end = toICSDate(endISO);
+      const uid = `planner-${yyyymmdd}-${idx}@planner`;
+
+      const summary = `PAGO: ${det} — $${absMonto}`;
+      const desc = nota ? `Nota: ${nota}` : "";
+
+      lines.push(
+        "BEGIN:VEVENT",
+        `UID:${uid}`,
+        `DTSTAMP:${stamp}`,
+        `DTSTART;VALUE=DATE:${yyyymmdd}`,
+        `DTEND;VALUE=DATE:${yyyymmdd_end}`,
+        `SUMMARY:${escapeICS(summary)}`,
+        `DESCRIPTION:${escapeICS(desc)}`,
+        "BEGIN:VALARM",
+        "TRIGGER:-P1D",
+        "ACTION:DISPLAY",
+        "DESCRIPTION:Recordatorio de pago",
+        "END:VALARM",
+        "END:VEVENT"
+      );
+    });
+
+    lines.push("END:VCALENDAR");
+
+    const blob = new Blob([lines.join("\r\n")], {type:"text/calendar;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `pagos-${state.month}.ics`; a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // ===== Motor de simulación =====
+  function buildEvents(y,m){
+    const ev=[];
+    // Ingresos viernes
+    if(state.autoFri==='on'){
+      fridays(y,m).forEach((d,idx)=>{ if(state.omitFirst && idx===0) return; ev.push({date:d,kind:"INGRESO",txt:"Ingreso viernes",amt:state.weekly}); });
+    }
+    // Ingresos manuales
+    state.manualIncomes.forEach(mi=>{ if(mi.date.slice(0,7)===ymd(y,m,1).slice(0,7)) ev.push({date:mi.date,kind:"INGRESO",txt:"Ingreso manual",amt:mi.amount}); });
+    // Recurrentes (obligatorios)
+    state.recurrents.forEach(r=>{
+      const day = Math.min(31, Math.max(1, r.day));
+      ev.push({date:ymd(y,m,day),kind:"PAGO",txt:r.name,amt:r.amt,mandatory:true});
+    });
+    // Tarjetas
+    state.cards.forEach(c=>{
+      const due=nextDueFromRule(c.rule, y, m);
+      let amt = N(c.pay);
+      if(c.rule==='EOM-3' && amt===0) amt = N(c.debt); // Apple total
+      const isCapitalOne = c.name==='Capital One' && c.rule==='D29';
+      ev.push({
+        date:due, kind:"PAGO", txt:`Pago ${c.name}`, amt:amt,
+        mandatory:!isCapitalOne, optional:isCapitalOne, force:(isCapitalOne && state.capForce)
+      });
+    });
+    // Seguro obligatorio
+    ev.push({date:ymd(y,m,12),kind:"PAGO",txt:"Seguro del coche",amt:state.carIns,mandatory:true});
+    // Renta obligatoria (mes siguiente)
     const nm=nextMonth(y,m);
-    ev.push({date:ymd(nm.y,nm.m,1), kind:"PAGO", txt:"Renta (mes siguiente)", amt:rent, mandatory:true});
-    (otherOutlays||[]).forEach(g=>{
+    ev.push({date:ymd(nm.y,nm.m,1), kind:"PAGO", txt:"Renta (mes siguiente)", amt:state.rent, mandatory:true});
+    // Otros
+    state.otherOutlays.forEach(g=>{
       if(g.date.slice(0,7)===ymd(y,m,1).slice(0,7)){
         ev.push({date:g.date, kind:"PAGO", txt:(g.what||"Otro gasto"), amt:N(g.amt), mandatory:!!g.mandatory, isOther:true});
       }
     });
-    // Orden
     ev.sort((a,b)=>{
       if(a.date===b.date){
         if(a.kind!==b.kind) return a.kind==="INGRESO"?-1:1;
-        const wa=(a.mandatory?0:(a.optional?2:1));
-        const wb=(b.mandatory?0:(b.optional?2:1));
-        return wa-wb;
+        return a.mandatory?-1:1;
       }
       return a.date<b.date?-1:1;
     });
     return ev;
   }
 
-  function initialMandatory(params){
-    const {freedomPay, freedomDebt, appleDebt, rent, carIns, otherOutlays} = params;
-    let t=0;
-    t+=104; t+=Math.min(freedomPay, Math.max(0,freedomDebt)); t+=100; t+=carIns; t+=500; t+=Math.max(0,appleDebt); t+=rent;
-    (otherOutlays||[]).forEach(g=>{
-      if(g.mandatory) t+=N(g.amt);
+  // Suma SOLO lo obligatorio para “hold”
+  function initialMandatory(){
+    let t = state.rent + state.carIns;
+    state.recurrents.forEach(r=> t+=r.amt);
+    state.cards.forEach(c=>{
+      let amt = N(c.pay);
+      if(c.rule==='EOM-3' && amt===0) amt = N(c.debt);
+      if(!(c.name==='Capital One' && c.rule==='D29')) t += amt; // Capital One es opcional
     });
+    state.otherOutlays.forEach(g=>{ if(g.mandatory) t+=N(g.amt); });
     return t;
   }
 
-  function simulateMonth(y,m,inputs,renderCb){
-    let saldo = inputs.saldo, floor=inputs.floor, rent=inputs.rent;
-    let appleDebt=inputs.appleDebt, freedomDebt=inputs.freedomDebt, capDebt=inputs.capDebt;
-    let mandatoryLeft = initialMandatory(inputs);
+  function simulateMonth(y,m,renderCb){
+    let saldo = state.saldo, floor=state.minBal, rent=state.rent;
+    let mandatoryLeft = initialMandatory();
+    const ev = buildEvents(y,m);
 
-    const tb= $("table").querySelector("tbody");
-    const ev = buildEvents(y,m,inputs);
-
-    // stats
     let totIncome=0, totPayments=0, pisoViolado=false, rentaPagada=false, applePagado=false, missedMandatory=false;
     let cat={prestamo:0,telefono:0,seguro:0,recurrente:0,apple:0,freedom:0,capone:0,renta:0,otros:0};
-    let capPagoReal=0;
+    let capPagoReal=0, capDebt=state.cards.find(c=>c.name==='Capital One')?.debt||0;
+    let freedomDebt=state.cards.find(c=>c.name==='Freedom (Chase)')?.debt||0;
+    let appleDebt=state.cards.find(c=>c.name==='Apple Card')?.debt||0;
 
     function refreshKpis(){ const safe=Math.max(0, saldo - floor - mandatoryLeft); setKpis({saldo, floor, rent, hold:mandatoryLeft, safe}); }
 
     for(const e of ev){
       if(e.kind==="INGRESO"){
-        saldo+=e.amt; totIncome+=e.amt; renderCb&&renderCb("INGRESO", e, saldo, ""); refreshKpis(); continue;
+        saldo+=e.amt; totIncome+=e.amt;
+        renderCb&&renderCb(e.date, "INGRESO", e.txt, e.amt, saldo, "");
+        refreshKpis(); continue;
       }
+
+      let monto = e.amt;
+
+      // --- OPCIONALES (no deben reducir mandatoryLeft) ---
       if(e.optional){
-        const desired = Math.min(Math.max(0,e.desired||0), Math.max(0,capDebt));
+        const desired = monto;
         if(e.force){
-          const maxByFloor = Math.max(0, saldo - floor);
-          const pay = Math.min(desired, maxByFloor);
-          let nota = (pay<desired)?("⚠️ Forzado: faltan "+money(desired-pay)):"Forzado";
-          if(pay>0){ saldo-=pay; capDebt=Math.max(0,capDebt-pay); capPagoReal+=pay; totPayments+=pay; cat.capone+=pay; }
-          renderCb&&renderCb("PAGO", {...e, amt:pay}, saldo, nota);
+          const pay = Math.min(desired, Math.max(0, saldo - floor));
+          const nota = (pay<desired)?("⚠️ Forzado: faltan "+money(desired-pay)):"Forzado";
+          if(pay>0){ saldo-=pay; capDebt-=pay; capPagoReal+=pay; totPayments+=pay; cat.capone+=pay; }
+          renderCb&&renderCb(e.date, "PAGO", e.txt, -pay, saldo, nota);
           refreshKpis(); continue;
         }else{
-          const libreSeguro = Math.max(0, saldo - floor - mandatoryLeft);
-          const pay = Math.min(desired, libreSeguro);
-          let nota = (pay<desired)?("⚠️ Ajustado: faltan "+money(desired-pay)):"";
-          if(pay>0){ saldo-=pay; capDebt=Math.max(0,capDebt-pay); capPagoReal+=pay; totPayments+=pay; cat.capone+=pay; }
-          renderCb&&renderCb("PAGO", {...e, amt:pay}, saldo, nota);
+          const pay = Math.min(desired, Math.max(0, saldo - floor - mandatoryLeft));
+          const nota = (pay<desired)?("⚠️ Ajustado: faltan "+money(desired-pay)):"";
+          if(pay>0){ saldo-=pay; capDebt-=pay; capPagoReal+=pay; totPayments+=pay; cat.capone+=pay; }
+          renderCb&&renderCb(e.date, "PAGO", e.txt, -pay, saldo, nota);
           refreshKpis(); continue;
         }
       }
 
-      // Pago obligatorio u otro obligatorio
-      let monto = Math.max(0, e.amt||0);
-      if(e.txt.startsWith("Apple")) monto = Math.max(0, appleDebt);
-      if(e.txt.startsWith("Freedom")) monto = Math.min(Math.max(0,freedomDebt), Math.max(0,inputs.freedomPay));
+      // --- NORMALIZA MONTOS ESPECIALES ---
+      if(e.txt.includes("Apple")) monto = appleDebt;
+      if(e.txt.includes("Freedom")) monto = Math.min(freedomDebt, state.freedomPay);
 
+      // --- NO OBLIGATORIOS (otros opcionales) ---
       if(!e.mandatory){
-        // opcional "otros"
-        const libreSeguro = Math.max(0, saldo - floor - mandatoryLeft);
-        const pay = Math.min(monto, libreSeguro);
-        let nota = (pay<monto)?("⚠️ Opcional ajustado: faltan "+money(monto-pay)):"";
+        const pay = Math.min(monto, Math.max(0, saldo - floor - mandatoryLeft));
+        const nota = (pay<monto)?("⚠️ Opcional ajustado: faltan "+money(monto-pay)):"";
         if(pay>0){ saldo-=pay; totPayments+=pay; cat.otros+=pay; }
-        renderCb&&renderCb("PAGO", {...e, amt:pay}, saldo, nota); refreshKpis(); continue;
+        renderCb&&renderCb(e.date, "PAGO", e.txt, -pay, saldo, nota);
+        refreshKpis(); continue;
       }
 
-      // obligatorio
+      // --- OBLIGATORIOS ---
       if(saldo - monto < floor){
-        renderCb&&renderCb("PAGO", e, saldo, "🚨 Violación del piso"); pisoViolado=true; missedMandatory=true; refreshKpis(); continue;
+        renderCb&&renderCb(e.date, "PAGO", e.txt, 0, saldo, "🚨 Violación del piso");
+        pisoViolado=true; missedMandatory=true; refreshKpis(); continue;
       }
-      // ejecuta
-      saldo-=monto; totPayments+=monto;
-      if(e.txt.startsWith("Apple")){ appleDebt=Math.max(0,appleDebt-monto); cat.apple+=monto; if(appleDebt===0) applePagado=true; }
-      else if(e.txt.startsWith("Freedom")){ freedomDebt=Math.max(0,freedomDebt-monto); cat.freedom+=monto; }
-      else if(e.txt.startsWith("Renta")){ cat.renta+=monto; rentaPagada=(monto>=rent); }
-      else if(e.txt.startsWith("Préstamo")){ cat.prestamo+=monto; }
-      else if(e.txt.startsWith("Teléfono")){ cat.telefono+=monto; }
-      else if(e.txt.startsWith("Seguro del coche")){ cat.seguro+=monto; }
-      else if(e.txt.startsWith("Pago recurrente")){ cat.recurrente+=monto; }
+      saldo-=monto; totPayments+=monto; mandatoryLeft=Math.max(0,mandatoryLeft-monto);
+      if(e.txt.includes("Apple")){ appleDebt-=monto; cat.apple+=monto; if(appleDebt<=0) applePagado=true; }
+      else if(e.txt.includes("Freedom")){ freedomDebt-=monto; cat.freedom+=monto; }
+      else if(e.txt.includes("Capital One")){ capDebt-=monto; cat.capone+=monto; } // si llegara marcado obligatorio
+      else if(e.txt.includes("Renta")){ cat.renta+=monto; rentaPagada=(monto>=rent); }
+      else if(e.txt.includes("Préstamo")){ cat.prestamo+=monto; }
+      else if(e.txt.includes("Teléfono")){ cat.telefono+=monto; }
+      else if(e.txt.includes("Seguro")){ cat.seguro+=monto; }
+      else if(e.txt.includes("recurrente")){ cat.recurrente+=monto; }
       else if(e.isOther){ cat.otros+=monto; }
-      mandatoryLeft=Math.max(0, mandatoryLeft-monto);
-      renderCb&&renderCb("PAGO", e, saldo, ""); refreshKpis();
+
+      renderCb&&renderCb(e.date, "PAGO", e.txt, -monto, saldo, "Obligatorio");
+      refreshKpis();
     }
 
     return {saldo, totIncome, totPayments, pisoViolado, rentaPagada, applePagado, missedMandatory, cat, capPagoReal, capDebt, freedomDebt};
   }
 
-  // ===== Sugerencias (heurística: barrido por Freedom para maximizar cap sin romper piso/Apple/Renta) =====
-  function computeSuggestions(){
-    const pm=parseMonth($("month").value); if(!pm) return {note:"Mes inválido", freedom:null, cap:null};
-    const y=pm.y, m=pm.m;
-    const base={
-      saldo:N($("saldo").value),
-      floor:N($("minBal").value)||400,
-      rent:N($("rent").value)||1600,
-      weekly:N($("weekly").value)||700,
-      autoFri:$("autoFri").value, omitFirst:$("omitFirst").checked,
-      appleDebt:N($("appleDebt").value),
-      freedomDebt:N($("freedomDebt").value),
-      capDebt:N($("capDebt").value),
-      capForce:false, // sugerencias asumen modo sano
-      carIns:N($("carIns").value)||335,
-      manualIncomes:[...manualIncomes],
-      otherOutlays:[...otherOutlays]
-    };
-    const maxF = Math.max(0, base.freedomDebt);
-    let best = null;
-    function score(res){ return (res.capPagoReal||0)*100000 + (res.saldo||0); }
-    for(let f=0; f<=maxF; f+=25){
-      const inputs={...base, freedomPay:f, capPay:base.capDebt};
-      const res = simulateMonth(y,m,inputs,null);
-      const ok = !res.pisoViolado && res.applePagado && res.rentaPagada;
-      if(!ok) continue;
-      const sc = score(res);
-      if(!best || sc>best.sc){ best={f, cap:Math.max(0,base.capDebt-(res.capDebt||0)), sc}; }
-    }
-    if(best){
-      const lo=Math.max(0,best.f-24), hi=Math.min(maxF,best.f+24);
-      for(let f=lo; f<=hi; f+=5){
-        const inputs={...base, freedomPay:f, capPay:base.capDebt};
-        const res=simulateMonth(y,m,inputs,null);
-        const ok=!res.pisoViolado && res.applePagado && res.rentaPagada;
-        if(!ok) continue;
-        const sc=score(res);
-        if(sc>best.sc){ best={f, cap:Math.max(0,base.capDebt-(res.capDebt||0)), sc}; }
-      }
-      return {freedom:best.f, cap:best.cap, note:"Maximiza Capital One sin romper piso, con Apple y renta pagados."};
-    }else{
-      return {freedom:null, cap:null, note:"No hay combinación que pague Apple y renta respetando el piso. Sube ingresos o baja pagos opcionales."};
-    }
-  }
-
-  $("calcSug").onclick=function(){
+  // ===== Generar plan =====
+  function generatePlan(){
     clearErr();
-    const s = computeSuggestions();
-    lastSuggestions = s;
-    if(s.freedom==null){
-      $("sugText").innerHTML = `<span class="pill bad">Sin solución segura</span> ${s.note}`;
-    }else{
-      $("sugText").innerHTML = `<b>Sugerido:</b> Freedom (11) = <span class="mono">${money(s.freedom)}</span> · Capital One (29) = <span class="mono">${money(s.cap)}</span><br/><span class="mini">${s.note}</span>`;
-    }
-    saveState();
-  };
-  $("applySug").onclick=function(){
-    if(lastSuggestions.freedom!=null){ $("freedomPay").value = String(lastSuggestions.freedom); }
-    if(lastSuggestions.cap!=null){ $("capPay").value = String(lastSuggestions.cap); }
-    saveState();
-  };
-
-  // ===== Generar plan (render real) =====
-  $("clear").onclick=function(){ $("table").querySelector("tbody").innerHTML=""; clearErr(); $("summary").innerHTML=""; saveState(); };
-
-  $("gen").onclick=function(){
-    clearErr();
-    const pm=parseMonth($("month").value); if(!pm) return showErr("Mes inválido (usa YYYY-MM)");
+    const pm=parseMonth(state.month); if(!pm) return showErr("Mes inválido");
     const y=pm.y, m=pm.m;
+    const tb=$("tblPlan").querySelector("tbody"); tb.innerHTML="";
+    const summaryEl=$("planSummary"); summaryEl.innerHTML="";
 
-    const inputs={
-      saldo:N($("saldo").value),
-      floor:N($("minBal").value)||400,
-      rent:N($("rent").value)||1600,
-      weekly:N($("weekly").value)||700,
-      autoFri:$("autoFri").value, omitFirst:$("omitFirst").checked,
-      appleDebt:N($("appleDebt").value),
-      freedomDebt:N($("freedomDebt").value),
-      freedomPay:Math.max(0,N($("freedomPay").value)||0),
-      capDebt:N($("capDebt").value),
-      capPay:Math.max(0,N($("capPay").value)||0),
-      capForce:$("capForce").checked,
-      carIns:N($("carIns").value)||335,
-      manualIncomes:[...manualIncomes],
-      otherOutlays:[...otherOutlays]
-    };
-
-    const tb=$("table").querySelector("tbody"); tb.innerHTML="";
-    const summaryEl=$("summary"); summaryEl.innerHTML="";
-
-    const res = simulateMonth(y,m,inputs,(kind,e,saldo,nota)=>{
-      const type = (kind==="INGRESO")?"INGRESO":"PAGO";
-      const amt = (kind==="INGRESO")?e.amt:e.amt;
-      addRow(tb, e.date, type, e.txt, amt, saldo, nota, (kind==="PAGO" && e.mandatory)?"mand":"");
+    const res = simulateMonth(y,m,(date, type, txt, amt, saldo, note)=>{
+      const prettyAmt = (type==="INGRESO") ? `<span class="ok">${money(amt)}</span>` :
+                       (type==="PAGO" && amt!=0) ? `<span class="bad">${money(amt)}</span>` : money(0);
+      const tr=document.createElement("tr");
+      tr.innerHTML = `<td>${date}</td><td>${type}</td><td>${txt}</td><td>${prettyAmt}</td><td>${money(saldo)}</td><td class="mini">${note}</td>`;
+      tb.appendChild(tr);
     });
 
     const flujo = res.totIncome - res.totPayments;
     let verdict, vClass;
     if(!res.pisoViolado && res.applePagado && res.rentaPagada && !res.missedMandatory){
-      verdict = "OK — Piso respetado, Apple y renta pagados"; vClass="ok";
+      verdict = "OK — Piso, Apple y renta OK"; vClass="ok";
     }else if(!res.pisoViolado){
-      verdict = "RIESGO — Revisa Apple/Renta y/o obligatorios pendientes"; vClass="warn";
+      verdict = "RIESGO — Revisa Apple/Renta"; vClass="warn";
     }else{
-      verdict = "FALLÓ — Se violó el piso o no se pudieron pagar obligatorios"; vClass="bad";
+      verdict = "FALLÓ — Piso violado"; vClass="bad";
     }
 
-    const items = [
-      `<div class="card"><b>Semáforo del mes</b><div class="pill ${vClass}" style="margin-top:6px">${verdict}</div><div class="mini">Criterios: Piso, Apple (27), Renta (1), y obligatorios.</div></div>`,
-      `<div class="card"><b>Totales</b><div class="mono">Ingresos: ${money(res.totIncome)}</div><div class="mono">Pagos: ${money(res.totPayments)}</div><div class="mono">Flujo neto: ${money(flujo)}</div><div class="mono">Saldo final: ${money(res.saldo)}</div></div>`,
-      `<div class="card"><b>Estados</b>
-        <div>${pill(res.applePagado, res.applePagado?"Apple: pagado total":"Apple: pendiente")}</div>
-        <div>${pill(res.rentaPagada, res.rentaPagada?"Renta: pagada":"Renta: NO pagada")}</div>
-        <div>${pill(!res.pisoViolado, !res.pisoViolado?"Piso respetado":"Piso violado")}</div>
-        <div>${pill(!res.missedMandatory && !res.pisoViolado, (!res.missedMandatory && !res.pisoViolado)?"Obligatorios: cumplidos":"Obligatorios: con fallas")}</div>
-      </div>`,
-      `<div class="card"><b>Tarjetas</b>
-        <div class="mono">Freedom pendiente: ${money(res.freedomDebt)}</div>
-        <div class="mono">Capital One pagado: ${money(res.capPagoReal)} · Pendiente: ${money(res.capDebt)}</div>
-      </div>`,
-      `<div class="card"><b>Por categoría</b>
-        <div class="mono">Préstamo: ${money(res.cat.prestamo)}</div>
-        <div class="mono">Teléfono: ${money(res.cat.telefono)}</div>
-        <div class="mono">Seguro coche: ${money(res.cat.seguro)}</div>
-        <div class="mono">Recurrente: ${money(res.cat.recurrente)}</div>
-        <div class="mono">Apple: ${money(res.cat.apple)}</div>
-        <div class="mono">Freedom: ${money(res.cat.freedom)}</div>
-        <div class="mono">Capital One: ${money(res.cat.capone)}</div>
-        <div class="mono">Renta: ${money(res.cat.renta)}</div>
-        <div class="mono">Otros: ${money(res.cat.otros)}</div>
-      </div>`
-    ];
-    summaryEl.innerHTML = items.join("");
-    saveState(); // guarda el estado tras generar
+    summaryEl.innerHTML = `
+      Ingresos: <b>${money(res.totIncome)}</b> · Pagos: <b>${money(res.totPayments)}</b> · Flujo: <b>${money(flujo)}</b><br/>
+      Saldo final: <b>${money(res.saldo)}</b> · Semáforo: <b class="pill ${vClass}">${verdict}</b>
+    `;
+    drawChart(res);
+  }
+
+  // ===== Sugerencias =====
+  function computeSuggestions(){
+    const pm=parseMonth(state.month); if(!pm) return {note:"Mes inválido", freedom:null, cap:null};
+    const y=pm.y, m=pm.m;
+    const maxF = state.freedomDebt;
+    let best = null;
+    function score(res){ return (res.capPagoReal||0)*100000 + (res.saldo||0); }
+    for(let f=0; f<=maxF; f+=25){
+      const prev=state.freedomPay, prevCap=state.capPay;
+      state.freedomPay = f; state.capPay = state.capDebt;
+      const res = simulateMonth(y,m,null);
+      const ok = !res.pisoViolado && res.applePagado && res.rentaPagada;
+      if(ok && (!best || score(res)>best.sc)) best={f, cap:state.capDebt-res.capDebt, sc:score(res)};
+      state.freedomPay=prev; state.capPay=prevCap;
+    }
+    if(best){
+      const lo=Math.max(0,best.f-24), hi=Math.min(maxF,best.f+24);
+      for(let f=lo; f<=hi; f+=5){
+        const prev=state.freedomPay, prevCap=state.capPay;
+        state.freedomPay = f; state.capPay = state.capDebt;
+        const res=simulateMonth(y,m,null);
+        const ok=!res.pisoViolado && res.applePagado && res.rentaPagada;
+        if(ok && score(res)>best.sc) best={f, cap:state.capDebt-res.capDebt, sc:score(res)};
+        state.freedomPay=prev; state.capPay=prevCap;
+      }
+      return {freedom:best.f, cap:best.cap, note:"Maximiza Capital One sin romper piso."};
+    }
+    return {freedom:null, cap:null, note:"No combinación segura."};
+  }
+
+  $("calcSug").onclick=function(){
+    clearErr();
+    const s = computeSuggestions();
+    if(s.freedom==null){
+      $("sugText").innerHTML = `<span class="pill bad">Sin solución</span> ${s.note}`;
+    }else{
+      const moneyFmt=(x)=>"$"+Number(x||0).toFixed(2);
+      $("sugText").innerHTML = `Sugerido: Freedom = ${moneyFmt(s.freedom)} · Capital One = ${moneyFmt(s.cap)}<br/><span class="mini">${s.note}</span>`;
+    }
+  };
+  $("applySug").onclick=function(){
+    const s = computeSuggestions();
+    if(s.freedom!=null){ state.freedomPay = s.freedom; $("freedomPay").value = s.freedom; }
+    if(s.cap!=null){ state.capPay = s.cap; $("capPay").value = s.cap; }
+    save(); renderKpis();
   };
 
-  // KPIs iniciales + render listas
-  setKpis({saldo:N($("saldo").value), floor:N($("minBal").value)||400, rent:N($("rent").value)||1600, hold:0, safe:Math.max(0, N($("saldo").value)-(N($("minBal").value)||400))});
-  renderOtherOutlays();
+  // ===== Chart =====
+  function drawChart(res){
+    const cvs=$("chart"), ctx=cvs.getContext('2d');
+    const W=cvs.width=cvs.clientWidth*2, H=cvs.height=220*2; ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='#334155'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(40,H-40); ctx.lineTo(W-20,H-40); ctx.stroke();
+    ctx.font='28px system-ui';
+    const data=[res.totIncome, res.totPayments, res.saldo, Math.max(0, res.saldo-state.minBal)];
+    const labels=['Ingresos','Pagos','Saldo','Libre'];
+    const max=Math.max(...data,1); const barW=Math.floor((W*0.7)/data.length); const startX=Math.floor((W-barW*data.length)/2);
+    data.forEach((v,i)=>{ const h=Math.round((v/max)*(H-120)); const x=startX+i*barW+20, y=H-40-h;
+      ctx.fillStyle= i===1? '#ef4444' : (i===3? '#22c55e' : '#60a5fa'); ctx.fillRect(x,y,barW-40,h);
+      ctx.fillStyle='#e5e7eb'; ctx.fillText(labels[i], x, H-10); ctx.fillText('$'+Math.round(v), x, y-10);
+    });
+  }
 
-  // salva también al cerrar (por si acaso)
-  window.addEventListener("beforeunload", saveState);
+  // ===== Eventos UI =====
+  $("saveConfig").onclick=()=>{
+    state.month = $("month").value;
+    state.saldo = N($("saldo").value);
+    state.minBal = N($("minBal").value);
+    state.rent = N($("rent").value);
+    state.weekly = N($("weekly").value);
+    state.autoFri = $("autoFri").value;
+    state.omitFirst = $("omitFirst").checked;
+    save(); renderKpis();
+  };
+  $("updateDebts").onclick=()=>{
+    state.appleDebt = N($("appleDebt").value);
+    state.freedomDebt = N($("freedomDebt").value);
+    state.freedomPay = N($("freedomPay").value);
+    state.capDebt = N($("capDebt").value);
+    state.capPay = N($("capPay").value);
+    state.capForce = $("capForce").checked;
+    state.carIns = N($("carIns").value);
+    state.cards.find(c=>c.name==='Apple Card').debt = state.appleDebt;
+    state.cards.find(c=>c.name==='Freedom (Chase)').debt = state.freedomDebt;
+    state.cards.find(c=>c.name==='Freedom (Chase)').pay = state.freedomPay;
+    state.cards.find(c=>c.name==='Capital One').debt = state.capDebt;
+    state.cards.find(c=>c.name==='Capital One').pay = state.capPay;
+    save(); clearErr(); renderKpis();
+  };
+  $("clear").onclick=()=>{ $("tblPlan").querySelector("tbody").innerHTML=""; clearErr(); $("planSummary").innerHTML=""; };
+  $("gen").onclick=generatePlan;
+
+  // ===== Render KPIs =====
+  function renderKpis(){
+    const hold = initialMandatory();
+    const safe = Math.max(0, state.saldo - state.minBal - hold);
+    setKpis({saldo:state.saldo, floor:state.minBal, rent:state.rent, hold, safe});
+    $("periodLabel").textContent = `Mes: ${state.month}`;
+  }
+
+  renderKpis();
 })();
 </script>
+
+<!-- Print limpio -->
+<style media="print">
+  header{display:none}
+  body{background:#fff;color:#000}
+  .card{border:1px solid #ccc}
+  .btn,.actions{display:none}
+  canvas{border:1px solid #ccc}
+</style>
 </body>
 </html>
