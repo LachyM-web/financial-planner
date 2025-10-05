@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Planner – Piso $400, Renta $1600, Apple total, Freedom libre, Seguro 12, Capital One seleccionable/forzado</title>
+<title>Planner – Piso $400, Renta $1600, Apple total, Freedom y Capital One obligatorios</title>
 <style>
   :root{
     --bg:#0f172a;--card:#111827;--ink:#e5e7eb;--muted:#94a3b8;--brand:#22c55e;--danger:#ef4444;--warn:#f59e0b;--line:#1f2937
@@ -105,8 +105,8 @@
     </div>
     <div class="row row-4" style="margin-top:8px">
       <div><label>Capital One — pago del 29 ($)</label><input id="capPay" value="717" inputmode="decimal"/></div>
-      <div style="align-self:end"><input type="checkbox" id="capForce"/><label for="capForce">Forzar pago exacto</label></div>
       <div><label>Seguro del coche — día 12 ($)</label><input id="carIns" value="335" inputmode="decimal"/></div>
+      <div></div>
       <div style="align-self:end"><button class="btn primary" id="updateDebts">Actualizar deudas</button></div>
     </div>
     <div class="mini">Pagos fijos: 6 (Préstamo $104), 11 (Freedom), 12 (Teléfono $100 + Seguro), 13 ($500), 27 (Apple total), 29 (Capital One), 1 (Renta sig.).</div>
@@ -163,6 +163,7 @@
       <tbody></tbody>
     </table>
     <div id="planSummary" class="mini" style="margin-top:8px"></div>
+    <div id="debtsSummary" class="mini" style="margin-top:6px"></div>
   </section>
 </main>
 
@@ -186,8 +187,16 @@
   }
   function nextMonth(y,m){return m===12?{y:y+1,m:1}:{y,m:m+1};}
   function pill(ok, text){ return `<span class="pill ${ok===true?'ok':ok===false?'bad':'warn'}">${text}</span>`; }
-  function todayLocalISO(){const d=new Date();const y=d.getFullYear(), m=d.getMonth()+1, dd=d.getDate();return y+"-"+("0"+m).slice(-2)+"-"+("0"+dd).slice(-2);}
-  function currentMonthLocal(){const d=new Date();const y=d.getFullYear(), m=d.getMonth()+1;return y+"-"+("0"+m).slice(-2);}
+  function todayLocalISO(){
+    const d = new Date();
+    const y = d.getFullYear(), m = d.getMonth() + 1, dd = d.getDate();
+    return y + "-" + String(m).padStart(2,'0') + "-" + String(dd).padStart(2,'0');
+  }
+  function currentMonthLocal(){
+    const d = new Date();
+    const y = d.getFullYear(), m = d.getMonth() + 1;
+    return y + "-" + String(m).padStart(2,'0');
+  }
   function uid(){ return Math.random().toString(36).slice(2,9); }
   function nextDueFromRule(rule, y, m){
     const lastDay = new Date(y, m, 0).getDate();
@@ -224,7 +233,6 @@
     freedomPay: 620,
     capDebt: 717,
     capPay: 717,
-    capForce: false,
     carIns: 335,
     manualIncomes: [],
     otherOutlays: [],
@@ -234,9 +242,9 @@
       {id:uid(), name:'Pago recurrente', amt:500, day:13}
     ],
     cards: [
-      {id:uid(), name:'Apple Card', debt:1024, pay:0, rule:'EOM-3'},
-      {id:uid(), name:'Freedom (Chase)', debt:620, pay:620, rule:'D11'},
-      {id:uid(), name:'Capital One', debt:717, pay:717, rule:'D29'}
+      {id:uid(), name:'Apple Card', debt:1024, pay:0, rule:'EOM-3'},   // Total
+      {id:uid(), name:'Freedom (Chase)', debt:620, pay:620, rule:'D11'},// Monto elegido
+      {id:uid(), name:'Capital One', debt:717, pay:717, rule:'D29'}     // Monto elegido
     ]
   };
 
@@ -260,7 +268,6 @@
     $("freedomPay").value = state.freedomPay;
     $("capDebt").value = state.capDebt;
     $("capPay").value = state.capPay;
-    $("capForce").checked = state.capForce;
     $("carIns").value = state.carIns;
     renderOtherOutlays();
     renderKpis();
@@ -324,7 +331,7 @@
     URL.revokeObjectURL(url);
   };
 
-  // ===== Exportar ICS (solo PAGO, all-day correcto, alarma -1 día) =====
+  // ===== Exportar ICS (solo PAGO, all-day, alarma -1 día) =====
   $("exportIcs").onclick=function(){
     const trs=[...$("tblPlan").querySelector("tbody").children];
     if(trs.length === 0) { showErr("Genera el plan primero"); return; }
@@ -347,18 +354,16 @@
     trs.forEach((tr, idx) => {
       const tds = [...tr.children];
       const tipo  = tds[1].textContent.trim();
-      if (tipo !== "PAGO") return; // solo pagos
+      if (tipo !== "PAGO") return;
 
-      const fecha = tds[0].textContent.trim();           // YYYY-MM-DD
+      const fecha = tds[0].textContent.trim();
       const det   = tds[2].textContent.trim();
-      const montoTxt = tds[3].textContent.trim();        // puede traer -$123.00 (con span)
+      const montoTxt = tds[3].textContent.replace(/[^\d\-\.\$]/g,"").trim();
       const nota  = tds[5].textContent.trim();
 
       const absMonto = Math.abs(parseFloat((montoTxt.match(/-?\d+(\.\d+)?/)||["0"])[0])).toFixed(2);
-      const startISO = fecha;
-      const endISO   = addDaysISO(fecha, 1);             // all-day => DTEND al día siguiente
-      const yyyymmdd = toICSDate(startISO);
-      const yyyymmdd_end = toICSDate(endISO);
+      const yyyymmdd = toICSDate(fecha);
+      const yyyymmdd_end = toICSDate(addDaysISO(fecha, 1));
       const uid = `planner-${yyyymmdd}-${idx}@planner`;
 
       const summary = `PAGO: ${det} — $${absMonto}`;
@@ -404,16 +409,18 @@
       const day = Math.min(31, Math.max(1, r.day));
       ev.push({date:ymd(y,m,day),kind:"PAGO",txt:r.name,amt:r.amt,mandatory:true});
     });
-    // Tarjetas
+    // Tarjetas (todos obligatorios)
     state.cards.forEach(c=>{
       const due=nextDueFromRule(c.rule, y, m);
       let amt = N(c.pay);
-      if(c.rule==='EOM-3' && amt===0) amt = N(c.debt); // Apple total
-      const isCapitalOne = c.name==='Capital One' && c.rule==='D29';
-      ev.push({
-        date:due, kind:"PAGO", txt:`Pago ${c.name}`, amt:amt,
-        mandatory:!isCapitalOne, optional:isCapitalOne, force:(isCapitalOne && state.capForce)
-      });
+      if(c.name==='Apple Card'){ // Apple total si pay==0
+        if(c.rule==='EOM-3' && amt===0) amt = N(c.debt);
+      }else if(c.name==='Freedom (Chase)'){
+        amt = Math.min(N(c.debt), N(state.freedomPay));
+      }else if(c.name==='Capital One'){
+        amt = Math.min(N(c.debt), N(state.capPay));
+      }
+      ev.push({date:due,kind:"PAGO",txt:`Pago ${c.name}`,amt:amt,mandatory:true});
     });
     // Seguro obligatorio
     ev.push({date:ymd(y,m,12),kind:"PAGO",txt:"Seguro del coche",amt:state.carIns,mandatory:true});
@@ -442,8 +449,10 @@
     state.recurrents.forEach(r=> t+=r.amt);
     state.cards.forEach(c=>{
       let amt = N(c.pay);
-      if(c.rule==='EOM-3' && amt===0) amt = N(c.debt);
-      if(!(c.name==='Capital One' && c.rule==='D29')) t += amt; // Capital One es opcional
+      if(c.name==='Apple Card' && c.rule==='EOM-3' && amt===0) amt = N(c.debt);
+      if(c.name==='Freedom (Chase)') amt = Math.min(N(c.debt), N(state.freedomPay));
+      if(c.name==='Capital One')     amt = Math.min(N(c.debt), N(state.capPay));
+      t += amt; // todos obligatorios
     });
     state.otherOutlays.forEach(g=>{ if(g.mandatory) t+=N(g.amt); });
     return t;
@@ -456,7 +465,7 @@
 
     let totIncome=0, totPayments=0, pisoViolado=false, rentaPagada=false, applePagado=false, missedMandatory=false;
     let cat={prestamo:0,telefono:0,seguro:0,recurrente:0,apple:0,freedom:0,capone:0,renta:0,otros:0};
-    let capPagoReal=0, capDebt=state.cards.find(c=>c.name==='Capital One')?.debt||0;
+    let capDebt=state.cards.find(c=>c.name==='Capital One')?.debt||0;
     let freedomDebt=state.cards.find(c=>c.name==='Freedom (Chase)')?.debt||0;
     let appleDebt=state.cards.find(c=>c.name==='Apple Card')?.debt||0;
 
@@ -469,48 +478,22 @@
         refreshKpis(); continue;
       }
 
+      // Ajusta montos especiales (Apple total / mínimos elegidos con tope a deuda real)
       let monto = e.amt;
+      if(e.txt.includes("Apple"))   monto = Math.max(0, Math.min(appleDebt, monto));
+      if(e.txt.includes("Freedom")) monto = Math.max(0, Math.min(freedomDebt, monto));
+      if(e.txt.includes("Capital One")) monto = Math.max(0, Math.min(capDebt, monto));
 
-      // --- OPCIONALES (no deben reducir mandatoryLeft) ---
-      if(e.optional){
-        const desired = monto;
-        if(e.force){
-          const pay = Math.min(desired, Math.max(0, saldo - floor));
-          const nota = (pay<desired)?("⚠️ Forzado: faltan "+money(desired-pay)):"Forzado";
-          if(pay>0){ saldo-=pay; capDebt-=pay; capPagoReal+=pay; totPayments+=pay; cat.capone+=pay; }
-          renderCb&&renderCb(e.date, "PAGO", e.txt, -pay, saldo, nota);
-          refreshKpis(); continue;
-        }else{
-          const pay = Math.min(desired, Math.max(0, saldo - floor - mandatoryLeft));
-          const nota = (pay<desired)?("⚠️ Ajustado: faltan "+money(desired-pay)):"";
-          if(pay>0){ saldo-=pay; capDebt-=pay; capPagoReal+=pay; totPayments+=pay; cat.capone+=pay; }
-          renderCb&&renderCb(e.date, "PAGO", e.txt, -pay, saldo, nota);
-          refreshKpis(); continue;
-        }
-      }
-
-      // --- NORMALIZA MONTOS ESPECIALES ---
-      if(e.txt.includes("Apple")) monto = appleDebt;
-      if(e.txt.includes("Freedom")) monto = Math.min(freedomDebt, state.freedomPay);
-
-      // --- NO OBLIGATORIOS (otros opcionales) ---
-      if(!e.mandatory){
-        const pay = Math.min(monto, Math.max(0, saldo - floor - mandatoryLeft));
-        const nota = (pay<monto)?("⚠️ Opcional ajustado: faltan "+money(monto-pay)):"";
-        if(pay>0){ saldo-=pay; totPayments+=pay; cat.otros+=pay; }
-        renderCb&&renderCb(e.date, "PAGO", e.txt, -pay, saldo, nota);
-        refreshKpis(); continue;
-      }
-
-      // --- OBLIGATORIOS ---
+      // OBLIGATORIOS
       if(saldo - monto < floor){
         renderCb&&renderCb(e.date, "PAGO", e.txt, 0, saldo, "🚨 Violación del piso");
         pisoViolado=true; missedMandatory=true; refreshKpis(); continue;
       }
       saldo-=monto; totPayments+=monto; mandatoryLeft=Math.max(0,mandatoryLeft-monto);
-      if(e.txt.includes("Apple")){ appleDebt-=monto; cat.apple+=monto; if(appleDebt<=0) applePagado=true; }
-      else if(e.txt.includes("Freedom")){ freedomDebt-=monto; cat.freedom+=monto; }
-      else if(e.txt.includes("Capital One")){ capDebt-=monto; cat.capone+=monto; } // si llegara marcado obligatorio
+
+      if(e.txt.includes("Apple")){ appleDebt=Math.max(0,appleDebt-monto); cat.apple+=monto; if(appleDebt<=0) applePagado=true; }
+      else if(e.txt.includes("Freedom")){ freedomDebt=Math.max(0,freedomDebt-monto); cat.freedom+=monto; }
+      else if(e.txt.includes("Capital One")){ capDebt=Math.max(0,capDebt-monto); cat.capone+=monto; }
       else if(e.txt.includes("Renta")){ cat.renta+=monto; rentaPagada=(monto>=rent); }
       else if(e.txt.includes("Préstamo")){ cat.prestamo+=monto; }
       else if(e.txt.includes("Teléfono")){ cat.telefono+=monto; }
@@ -522,7 +505,10 @@
       refreshKpis();
     }
 
-    return {saldo, totIncome, totPayments, pisoViolado, rentaPagada, applePagado, missedMandatory, cat, capPagoReal, capDebt, freedomDebt};
+    return {
+      saldo, totIncome, totPayments, pisoViolado, rentaPagada, applePagado, missedMandatory,
+      cat, capDebt, freedomDebt
+    };
   }
 
   // ===== Generar plan =====
@@ -532,6 +518,7 @@
     const y=pm.y, m=pm.m;
     const tb=$("tblPlan").querySelector("tbody"); tb.innerHTML="";
     const summaryEl=$("planSummary"); summaryEl.innerHTML="";
+    const debtsEl=$("debtsSummary"); debtsEl.innerHTML="";
 
     const res = simulateMonth(y,m,(date, type, txt, amt, saldo, note)=>{
       const prettyAmt = (type==="INGRESO") ? `<span class="ok">${money(amt)}</span>` :
@@ -555,6 +542,14 @@
       Ingresos: <b>${money(res.totIncome)}</b> · Pagos: <b>${money(res.totPayments)}</b> · Flujo: <b>${money(flujo)}</b><br/>
       Saldo final: <b>${money(res.saldo)}</b> · Semáforo: <b class="pill ${vClass}">${verdict}</b>
     `;
+
+    // Deudas restantes (SE ACTUALIZAN con lo que pagaste)
+    debtsEl.innerHTML = `
+      <b>Deudas restantes:</b>
+      Freedom (Chase): <b>${money(res.freedomDebt)}</b> ·
+      Capital One: <b>${money(res.capDebt)}</b>
+    `;
+
     drawChart(res);
   }
 
@@ -564,24 +559,30 @@
     const y=pm.y, m=pm.m;
     const maxF = state.freedomDebt;
     let best = null;
-    function score(res){ return (res.capPagoReal||0)*100000 + (res.saldo||0); }
+    function score(res){ return (state.capDebt - res.capDebt)*100000 + (res.saldo||0); }
     for(let f=0; f<=maxF; f+=25){
-      const prev=state.freedomPay, prevCap=state.capPay;
+      const prevF=state.freedomPay, prevC=state.capPay;
       state.freedomPay = f; state.capPay = state.capDebt;
       const res = simulateMonth(y,m,null);
       const ok = !res.pisoViolado && res.applePagado && res.rentaPagada;
-      if(ok && (!best || score(res)>best.sc)) best={f, cap:state.capDebt-res.capDebt, sc:score(res)};
-      state.freedomPay=prev; state.capPay=prevCap;
+      if(ok){
+        const sc = score(res);
+        if(!best || sc>best.sc) best={f, cap:(state.capDebt-res.capDebt), sc};
+      }
+      state.freedomPay=prevF; state.capPay=prevC;
     }
     if(best){
       const lo=Math.max(0,best.f-24), hi=Math.min(maxF,best.f+24);
       for(let f=lo; f<=hi; f+=5){
-        const prev=state.freedomPay, prevCap=state.capPay;
+        const prevF=state.freedomPay, prevC=state.capPay;
         state.freedomPay = f; state.capPay = state.capDebt;
         const res=simulateMonth(y,m,null);
         const ok=!res.pisoViolado && res.applePagado && res.rentaPagada;
-        if(ok && score(res)>best.sc) best={f, cap:state.capDebt-res.capDebt, sc:score(res)};
-        state.freedomPay=prev; state.capPay=prevCap;
+        if(ok){
+          const sc=score(res);
+          if(sc>best.sc) best={f, cap:(state.capDebt-res.capDebt), sc};
+        }
+        state.freedomPay=prevF; state.capPay=prevC;
       }
       return {freedom:best.f, cap:best.cap, note:"Maximiza Capital One sin romper piso."};
     }
@@ -637,8 +638,8 @@
     state.freedomPay = N($("freedomPay").value);
     state.capDebt = N($("capDebt").value);
     state.capPay = N($("capPay").value);
-    state.capForce = $("capForce").checked;
     state.carIns = N($("carIns").value);
+    // sincroniza estructura de tarjetas
     state.cards.find(c=>c.name==='Apple Card').debt = state.appleDebt;
     state.cards.find(c=>c.name==='Freedom (Chase)').debt = state.freedomDebt;
     state.cards.find(c=>c.name==='Freedom (Chase)').pay = state.freedomPay;
@@ -646,7 +647,7 @@
     state.cards.find(c=>c.name==='Capital One').pay = state.capPay;
     save(); clearErr(); renderKpis();
   };
-  $("clear").onclick=()=>{ $("tblPlan").querySelector("tbody").innerHTML=""; clearErr(); $("planSummary").innerHTML=""; };
+  $("clear").onclick=()=>{ $("tblPlan").querySelector("tbody").innerHTML=""; clearErr(); $("planSummary").innerHTML=""; $("debtsSummary").innerHTML=""; };
   $("gen").onclick=generatePlan;
 
   // ===== Render KPIs =====
