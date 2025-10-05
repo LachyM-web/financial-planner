@@ -4,16 +4,6 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Planner – piso $400, renta $1600, Apple total, Freedom libre, Seguro 12, Capital One seleccionable/forzado, Otros + Sugerencias</title>
-
-<!-- Icono para pestañas del navegador -->
-<link rel="icon" type="image/png" href="icon.png">
-
-<!-- Icono para iPhone/iPad (pantalla de inicio) -->
-<link rel="apple-touch-icon" href="icon.png">
-
-<!-- Nombre que aparece debajo del ícono en iOS -->
-<meta name="apple-mobile-web-app-title" content="Planner">
-
 <style>
   :root{--bg:#f7f8fc;--ink:#222;--card:#fff;--brand:#1f4fde;--line:#eef0f6;--muted:#555}
   *{box-sizing:border-box}
@@ -30,7 +20,7 @@
   button{cursor:pointer;font-weight:700}
   button.primary{background:var(--brand);color:#fff;border:none}
   table{width:100%;border-collapse:collapse}
-  th,td{padding:8px;border-bottom:1px solid #line;font-size:13px;text-align:left;vertical-align:top}
+  th,td{padding:8px;border-bottom:1px solid var(--line);font-size:13px;text-align:left;vertical-align:top}
   th{background:#f2f5ff}
   tr.mand{background:#fff7f0}
   tr.violation{background:#ffe9e9}
@@ -51,12 +41,6 @@
   .mini{font-size:12px;color:#666}
   .tag{display:inline-block;padding:2px 6px;border:1px solid #ddd;border-radius:6px;font-size:11px;margin-left:6px}
 </style>
-
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Planner">
-<link rel="apple-touch-icon" href="https://i.imgur.com/3CvL7rG.png">
-
 </head>
 <body>
 <header><h1>Planner — Pagos restan, viernes suman, piso $400, renta $1600, Apple total</h1></header>
@@ -212,8 +196,6 @@
     <div class="row">
       <button class="primary" id="gen">Generar plan</button>
       <button id="exportCsv">Exportar CSV</button>
-      <!-- NUEVO: botón para calendario -->
-      <button id="exportIcs">Exportar calendario (.ics)</button>
       <button id="save">Guardar</button>
       <button id="load">Cargar</button>
       <button id="clear">Limpiar tabla</button>
@@ -243,6 +225,7 @@
 
 <script>
 (function(){
+  // ===== Utilidades =====
   function $(id){return document.getElementById(id);}
   function N(v){var x=parseFloat((v??"").toString().replace(",","."));return isFinite(x)?x:0;}
   function money(n){n=Number(n||0);const s=n<0?"-":"";return s+"$"+Math.abs(n).toFixed(2);}
@@ -262,28 +245,86 @@
   }
   function nextMonth(y,m){return m===12?{y:y+1,m:1}:{y,m:m+1};}
   function pill(ok, text){ return `<span class="pill ${ok===true?'ok':ok===false?'bad':'warn'}">${text}</span>`; }
-  function todayLocalISO(){const d=new Date();const y=d.getFullYear(), m=d.getMonth()+1, dd=d.getDate();return y+"-"+("0"+m).slice(-2)+"-"+("0"+dd).slice(-2);}
-  function currentMonthLocal(){const d=new Date();const y=d.getFullYear(), m=d.getMonth()+1;return y+"-"+("0"+m).slice(-2);}
+  function todayLocalISO(){
+    const d = new Date();
+    const y = d.getFullYear(), m=d.getMonth()+1, dd=d.getDate();
+    return y+"-"+("0"+m).slice(-2)+"-"+("0"+dd).slice(-2);
+  }
+  function currentMonthLocal(){
+    const d = new Date();
+    const y = d.getFullYear(), m=d.getMonth()+1;
+    return y+"-"+("0"+m).slice(-2);
+  }
 
-  let manualIncomes=[]; let otherOutlays=[]; let lastSuggestions = {freedom: null, cap: null, note: ""};
+  // ===== Estado =====
+  let manualIncomes=[];
+  let otherOutlays=[];
+  let lastSuggestions = {freedom: null, cap: null, note: ""};
 
+  // ======= AUTOGUARDADO =======
+  const AUTO_KEY = "planner_autosave_v1";
+
+  function collectPayload(){
+    return {
+      month:$("month").value, saldo:$("saldo").value, minBal:$("minBal").value, rent:$("rent").value,
+      weekly:$("weekly").value, autoFri:$("autoFri").value, omitFirst:$("omitFirst").checked,
+      appleDebt:$("appleDebt").value, freedomDebt:$("freedomDebt").value, freedomPay:$("freedomPay").value,
+      capDebt:$("capDebt").value, capPay:$("capPay").value, capForce:$("capForce").checked,
+      carIns:$("carIns").value, manualIncomes, otherOutlays
+    };
+  }
+  function applyPayload(p){
+    if(!p) return;
+    for(const k of ["month","saldo","minBal","rent","weekly","appleDebt","freedomDebt","freedomPay","capDebt","capPay","carIns"]){
+      if(p[k]!==undefined) $(k).value=p[k];
+    }
+    if(p.capForce!==undefined) $("capForce").checked=!!p.capForce;
+    if(p.autoFri!==undefined) $("autoFri").value=p.autoFri;
+    if(p.omitFirst!==undefined) $("omitFirst").checked=!!p.omitFirst;
+    manualIncomes=p.manualIncomes||[];
+    otherOutlays=p.otherOutlays||[];
+    renderOtherOutlays();
+  }
+  function saveState(){ try{ localStorage.setItem(AUTO_KEY, JSON.stringify(collectPayload())); }catch(_){} }
+  function loadState(){ try{ const s=localStorage.getItem(AUTO_KEY); if(s){ applyPayload(JSON.parse(s)); } }catch(_){} }
+
+  function wireAutosave(){
+    const ids = ["month","saldo","minBal","rent","weekly","autoFri","omitFirst","appleDebt","freedomDebt","freedomPay","capDebt","capPay","capForce","carIns","mInDate","mInAmt","ogDate","ogWhat","ogAmt","ogMandatory"];
+    ids.forEach(id=>{
+      const el=$(id); if(!el) return;
+      const ev = (el.tagName==="SELECT"||el.type==="checkbox")?"change":"input";
+      el.addEventListener(ev, saveState);
+    });
+  }
+
+  // ===== Inicialización de inputs con calendario del dispositivo =====
   (function initDates(){
-    const m = $("month"); if(!m.value) m.value = currentMonthLocal();
-    const today = todayLocalISO(); if(!$("mInDate").value) $("mInDate").value = today; if(!$("ogDate").value) $("ogDate").value = today;
+    loadState(); // ← carga primero lo que haya
+    const m = $("month");
+    if(!m.value) m.value = currentMonthLocal();   // auto mes actual si no hay guardado
+    const today = todayLocalISO();
+    if(!$("mInDate").value) $("mInDate").value = today; // ingreso manual hoy
+    if(!$("ogDate").value) $("ogDate").value = today;   // otro gasto hoy
+    wireAutosave(); // engancha autoguardado
+    saveState();    // guarda el estado inicial
   })();
 
-  // Ingresos manuales
+  // ===== Ingresos manuales =====
   $("addIncome").onclick=function(){
     const d=$("mInDate").value.trim(), a=N($("mInAmt").value);
     if(!/^\d{4}-\d{2}-\d{2}$/.test(d)) return showErr("Fecha ingreso manual inválida (YYYY-MM-DD)");
     if(a<=0) return showErr("Monto ingreso manual inválido");
-    manualIncomes.push({date:d,amount:a}); $("mInAmt").value=""; clearErr();
+    manualIncomes.push({date:d,amount:a});
+    $("mInAmt").value="";
+    saveState(); // autoguarda
+    clearErr();
   };
-  $("clearIncome").onclick=function(){ manualIncomes=[]; };
+  $("clearIncome").onclick=function(){ manualIncomes=[]; saveState(); };
 
-  // Otros gastos
+  // ===== Otros gastos =====
   function renderOtherOutlays(){
-    const tb = $("ogTable").querySelector("tbody"); tb.innerHTML="";
+    const tb = $("ogTable").querySelector("tbody");
+    tb.innerHTML="";
     otherOutlays.forEach((g,idx)=>{
       const tr=document.createElement("tr");
       tr.innerHTML = `<td>${g.date}</td>
@@ -294,7 +335,7 @@
       tb.appendChild(tr);
     });
     [...tb.querySelectorAll(".delOg")].forEach(btn=>{
-      btn.onclick=function(){ const i=+this.getAttribute("data-i"); otherOutlays.splice(i,1); renderOtherOutlays(); };
+      btn.onclick=function(){ const i=+this.getAttribute("data-i"); otherOutlays.splice(i,1); renderOtherOutlays(); saveState(); };
     });
   }
   $("addOther").onclick=function(){
@@ -303,30 +344,25 @@
     if(a<=0) return showErr("Monto de gasto inválido");
     otherOutlays.push({date:d, what:w, amt:a, mandatory:mand});
     $("ogWhat").value="";$("ogAmt").value="";$("ogMandatory").checked=false;
-    renderOtherOutlays(); clearErr();
+    renderOtherOutlays(); saveState(); clearErr();
   };
-  $("clearOthers").onclick=function(){ otherOutlays=[]; renderOtherOutlays(); };
+  $("clearOthers").onclick=function(){ otherOutlays=[]; renderOtherOutlays(); saveState(); };
 
-  // Guardar / Cargar
+  // ===== Guardar / Cargar manual (botones existentes) =====
   $("save").onclick=function(){
-    const payload={
-      month:$("month").value, saldo:$("saldo").value, minBal:$("minBal").value, rent:$("rent").value,
-      weekly:$("weekly").value, autoFri:$("autoFri").value, omitFirst:$("omitFirst").checked,
-      appleDebt:$("appleDebt").value, freedomDebt:$("freedomDebt").value, freedomPay:$("freedomPay").value,
-      capDebt:$("capDebt").value, capPay:$("capPay").value, capForce:$("capForce").checked,
-      carIns:$("carIns").value, manualIncomes, otherOutlays
-    };
+    const payload=collectPayload();
     localStorage.setItem("planner_full_v6", JSON.stringify(payload));
+    saveState(); // también actualiza el autosave
   };
   $("load").onclick=function(){
     const s=localStorage.getItem("planner_full_v6"); if(!s) return showErr("No hay datos guardados");
     const p=JSON.parse(s);
-    for(const k of ["month","saldo","minBal","rent","weekly","appleDebt","freedomDebt","freedomPay","capDebt","capPay","carIns"]) $(k).value=p[k];
-    $("capForce").checked=!!p.capForce; $("autoFri").value=p.autoFri; $("omitFirst").checked=!!p.omitFirst;
-    manualIncomes=p.manualIncomes||[]; otherOutlays=p.otherOutlays||[]; renderOtherOutlays(); clearErr();
+    applyPayload(p);
+    saveState(); // sincroniza con autosave
+    clearErr();
   };
 
-  // Exportar CSV
+  // ===== Exportar CSV =====
   $("exportCsv").onclick=function(){
     const rows=[["Fecha","Tipo","Detalle","Monto","Saldo después","Nota"]];
     const trs=[...$("table").querySelector("tbody").children];
@@ -342,74 +378,7 @@
     URL.revokeObjectURL(url);
   };
 
-  // ======= NUEVO: Exportar iCalendar (.ics) desde la tabla =======
-  function toICSDate(iso){ return iso.replaceAll("-",""); }
-  function utcStamp(){
-    const d=new Date();
-    const p=n=>String(n).padStart(2,"0");
-    return d.getUTCFullYear()+p(d.getUTCMonth()+1)+p(d.getUTCDate())+"T"+p(d.getUTCHours())+p(d.getUTCMinutes())+p(d.getUTCSeconds())+"Z";
-  }
-  $("exportIcs").onclick=function(){
-    const pm = ($("month").value||"").slice(0,7) || "plan";
-    const tbody = $("table").querySelector("tbody");
-    const rows = [...tbody.querySelectorAll("tr")];
-    if(!rows.length){ return showErr("Primero pulsa “Generar plan” para crear los eventos."); }
-    clearErr();
-
-    const lines = [
-      "BEGIN:VCALENDAR",
-      "VERSION:2.0",
-      "CALSCALE:GREGORIAN",
-      "PRODID:-//Planner Pagos//ES"
-    ];
-    const stamp = utcStamp();
-
-    rows.forEach((tr, i)=>{
-      const tds = tr.children;
-      const fecha = tds[0].textContent.trim();     // YYYY-MM-DD
-      const tipo  = tds[1].textContent.trim();     // INGRESO / PAGO
-      const det   = tds[2].textContent.trim();
-      const montoTxt = tds[3].textContent.trim();  // -$500.00
-      const saldoTxt = tds[4].textContent.trim();
-      const nota  = tds[5].textContent.trim();
-
-      if(tipo!=="PAGO") return; // solo pagos en el calendario
-
-      // Normaliza monto positivo para el título
-      const monto = montoTxt.replace(/[^\d.-]/g,"");
-      const absMonto = Math.abs(parseFloat(monto||"0")).toFixed(2);
-      const yyyymmdd = toICSDate(fecha);
-      const uid = `pagos-${yyyymmdd}-${i}@planner`;
-
-      lines.push(
-        "BEGIN:VEVENT",
-        `UID:${uid}`,
-        `DTSTAMP:${stamp}`,
-        `DTSTART;VALUE=DATE:${yyyymmdd}`,
-        `SUMMARY:PAGO: ${det} — $${absMonto}`,
-        `DESCRIPTION:Saldo después: ${saldoTxt}${nota?` | Nota: ${nota}`:""}`,
-        "BEGIN:VALARM",
-        "TRIGGER:-P1D",
-        "ACTION:DISPLAY",
-        "DESCRIPTION:Recordatorio de pago",
-        "END:VALARM",
-        "END:VEVENT"
-      );
-    });
-
-    lines.push("END:VCALENDAR");
-
-    const blob = new Blob([lines.join("\r\n")], {type:"text/calendar;charset=utf-8"});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `pagos-${pm}.ics`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-  // ======= FIN Exportar iCalendar =======
-
-  // -------- Motor de simulación (sin cambios de lógica) --------
+  // ===== Motor de simulación (reutilizable para sugerencias) =====
   function buildEvents(y,m,params){
     const {weekly, autoFri, omitFirst, manualIncomes, appleDebt, freedomDebt, freedomPay, capDebt, capPay, capForce, carIns, rent, otherOutlays} = params;
     const ev=[];
@@ -432,6 +401,7 @@
         ev.push({date:g.date, kind:"PAGO", txt:(g.what||"Otro gasto"), amt:N(g.amt), mandatory:!!g.mandatory, isOther:true});
       }
     });
+    // Orden
     ev.sort((a,b)=>{
       if(a.date===b.date){
         if(a.kind!==b.kind) return a.kind==="INGRESO"?-1:1;
@@ -448,7 +418,9 @@
     const {freedomPay, freedomDebt, appleDebt, rent, carIns, otherOutlays} = params;
     let t=0;
     t+=104; t+=Math.min(freedomPay, Math.max(0,freedomDebt)); t+=100; t+=carIns; t+=500; t+=Math.max(0,appleDebt); t+=rent;
-    (otherOutlays||[]).forEach(g=>{ if(g.mandatory) t+=N(g.amt); });
+    (otherOutlays||[]).forEach(g=>{
+      if(g.mandatory) t+=N(g.amt);
+    });
     return t;
   }
 
@@ -456,7 +428,11 @@
     let saldo = inputs.saldo, floor=inputs.floor, rent=inputs.rent;
     let appleDebt=inputs.appleDebt, freedomDebt=inputs.freedomDebt, capDebt=inputs.capDebt;
     let mandatoryLeft = initialMandatory(inputs);
+
+    const tb= $("table").querySelector("tbody");
     const ev = buildEvents(y,m,inputs);
+
+    // stats
     let totIncome=0, totPayments=0, pisoViolado=false, rentaPagada=false, applePagado=false, missedMandatory=false;
     let cat={prestamo:0,telefono:0,seguro:0,recurrente:0,apple:0,freedom:0,capone:0,renta:0,otros:0};
     let capPagoReal=0;
@@ -486,11 +462,13 @@
         }
       }
 
+      // Pago obligatorio u otro obligatorio
       let monto = Math.max(0, e.amt||0);
       if(e.txt.startsWith("Apple")) monto = Math.max(0, appleDebt);
       if(e.txt.startsWith("Freedom")) monto = Math.min(Math.max(0,freedomDebt), Math.max(0,inputs.freedomPay));
 
       if(!e.mandatory){
+        // opcional "otros"
         const libreSeguro = Math.max(0, saldo - floor - mandatoryLeft);
         const pay = Math.min(monto, libreSeguro);
         let nota = (pay<monto)?("⚠️ Opcional ajustado: faltan "+money(monto-pay)):"";
@@ -498,9 +476,11 @@
         renderCb&&renderCb("PAGO", {...e, amt:pay}, saldo, nota); refreshKpis(); continue;
       }
 
+      // obligatorio
       if(saldo - monto < floor){
         renderCb&&renderCb("PAGO", e, saldo, "🚨 Violación del piso"); pisoViolado=true; missedMandatory=true; refreshKpis(); continue;
       }
+      // ejecuta
       saldo-=monto; totPayments+=monto;
       if(e.txt.startsWith("Apple")){ appleDebt=Math.max(0,appleDebt-monto); cat.apple+=monto; if(appleDebt===0) applePagado=true; }
       else if(e.txt.startsWith("Freedom")){ freedomDebt=Math.max(0,freedomDebt-monto); cat.freedom+=monto; }
@@ -517,6 +497,7 @@
     return {saldo, totIncome, totPayments, pisoViolado, rentaPagada, applePagado, missedMandatory, cat, capPagoReal, capDebt, freedomDebt};
   }
 
+  // ===== Sugerencias (heurística: barrido por Freedom para maximizar cap sin romper piso/Apple/Renta) =====
   function computeSuggestions(){
     const pm=parseMonth($("month").value); if(!pm) return {note:"Mes inválido", freedom:null, cap:null};
     const y=pm.y, m=pm.m;
@@ -529,7 +510,7 @@
       appleDebt:N($("appleDebt").value),
       freedomDebt:N($("freedomDebt").value),
       capDebt:N($("capDebt").value),
-      capForce:false,
+      capForce:false, // sugerencias asumen modo sano
       carIns:N($("carIns").value)||335,
       manualIncomes:[...manualIncomes],
       otherOutlays:[...otherOutlays]
@@ -570,14 +551,16 @@
     }else{
       $("sugText").innerHTML = `<b>Sugerido:</b> Freedom (11) = <span class="mono">${money(s.freedom)}</span> · Capital One (29) = <span class="mono">${money(s.cap)}</span><br/><span class="mini">${s.note}</span>`;
     }
+    saveState();
   };
   $("applySug").onclick=function(){
     if(lastSuggestions.freedom!=null){ $("freedomPay").value = String(lastSuggestions.freedom); }
     if(lastSuggestions.cap!=null){ $("capPay").value = String(lastSuggestions.cap); }
+    saveState();
   };
 
-  // Generar plan (render)
-  $("clear").onclick=function(){ $("table").querySelector("tbody").innerHTML=""; clearErr(); $("summary").innerHTML=""; };
+  // ===== Generar plan (render real) =====
+  $("clear").onclick=function(){ $("table").querySelector("tbody").innerHTML=""; clearErr(); $("summary").innerHTML=""; saveState(); };
 
   $("gen").onclick=function(){
     clearErr();
@@ -646,11 +629,15 @@
       </div>`
     ];
     summaryEl.innerHTML = items.join("");
+    saveState(); // guarda el estado tras generar
   };
 
   // KPIs iniciales + render listas
   setKpis({saldo:N($("saldo").value), floor:N($("minBal").value)||400, rent:N($("rent").value)||1600, hold:0, safe:Math.max(0, N($("saldo").value)-(N($("minBal").value)||400))});
   renderOtherOutlays();
+
+  // salva también al cerrar (por si acaso)
+  window.addEventListener("beforeunload", saveState);
 })();
 </script>
 </body>
